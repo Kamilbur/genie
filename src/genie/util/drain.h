@@ -94,6 +94,8 @@ class Drain {
    */
   virtual void FlushIn(uint64_t& pos) = 0;
 
+  virtual void SkipExporter(Type&& t, const Section& id) = 0;
+
   /**
    * @brief Virtual destructor for safe polymorphic use.
    *

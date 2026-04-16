@@ -35,6 +35,8 @@ class Module : public util::Source<Tout>, public util::Drain<Tin> {
    */
   void FlushIn(uint64_t& pos) override;
 
+  void SkipExporter(Tin&& t, const util::Section& id) override;
+
   /**
    * @brief
    */

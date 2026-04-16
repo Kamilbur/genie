@@ -131,6 +131,8 @@ class Decoder final : public core::ReadDecoder {
    */
   void FlowIn(core::AccessUnit&& t, const util::Section& id) override;
 
+
+  void SkipExporter(core::AccessUnit&& t, const util::Section& id) override;
   /**
    * @brief Reads a record from a file stream.
    *

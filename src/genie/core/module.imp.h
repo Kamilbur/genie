@@ -26,6 +26,13 @@ void Module<Tin, Tout>::FlushIn(uint64_t& pos) {
   util::Source<Tout>::FlushOut(pos);
 }
 
+template <typename Tin, typename Tout>
+void Module<Tin, Tout>::SkipExporter(Tin&& t, const util::Section& id) {
+  (void)t;
+  (void)id;
+  /* not implemented: should be implemented in all subclasses */
+}
+
 // -----------------------------------------------------------------------------
 
 }  // namespace genie::core

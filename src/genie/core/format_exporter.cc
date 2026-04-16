@@ -23,6 +23,9 @@ void FormatExporter::SkipIn(const util::Section&) {}
 
 void FormatExporter::FlushIn(uint64_t&) {}
 
+
+void FormatExporter::SkipExporter(record::Chunk&& t, const util::Section& id) {}
+
 // -----------------------------------------------------------------------------
 
 }  // namespace genie::core

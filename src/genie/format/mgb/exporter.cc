@@ -100,6 +100,7 @@ void Exporter::FlowIn(core::AccessUnit&& t, const util::Section& id) {
     if (data.Get(static_cast<core::GenDesc>(descriptor)).IsEmpty()) {
       continue;
     }
+    /* printf("Adding block with descriptor %u\n", descriptor); */
     au.AddBlock(
         Block(descriptor,
               std::move(data.Get(static_cast<core::GenDesc>(descriptor)))));

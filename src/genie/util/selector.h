@@ -120,6 +120,7 @@ class Selector final : public Drain<Tin>, public Source<Tout> {
    */
   void FlowIn(Tin&& t, const Section& id) override;
 
+  void SkipExporter(Tin&& t, const Section& id) override;
   /**
    * @brief Signals the end of data for all branches.
    *

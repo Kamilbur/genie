@@ -83,6 +83,8 @@ class SelectorTail final : public Source<Tout>, public Drain<Tout> {
    */
   void FlowIn(Tout&& t, const Section& id) override;
 
+  void SkipExporter(Tout&& t, const Section& id) override;
+
   /**
    * @brief Signals the end of data for a specific branch.
    *

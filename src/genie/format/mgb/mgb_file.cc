@@ -371,6 +371,15 @@ std::vector<uint8_t> MgbFile::collect_param_ids(
   return ret;
 }
 
+size_t MgbFile::CountAccessUnits() const {
+  return std::count_if(
+      units_.begin(), units_.end(),
+      [](const auto& u) -> bool {
+        return u.second->GetDataUnitType() ==
+               core::parameter::DataUnit::DataUnitType::kAccessUnit;
+      });
+}
+
 // -----------------------------------------------------------------------------
 
 }  // namespace genie::format::mgb

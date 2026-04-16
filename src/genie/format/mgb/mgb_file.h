@@ -168,6 +168,10 @@ class MgbFile {
       bool multiple_alignments, bool pos40,
       core::parameter::DataUnit::DatasetType dataset_type,
       core::AlphabetId alphabet) const;
+
+
+
+  [[nodiscard]] size_t CountAccessUnits() const;
 };
 
 // -----------------------------------------------------------------------------

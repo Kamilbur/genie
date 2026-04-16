@@ -440,6 +440,15 @@ void Decoder::FlowIn(core::AccessUnit&& t, const util::Section& id) {
   }
 }
 
+void Decoder::SkipExporter(core::AccessUnit&& t, const util::Section& id) {
+  (void) t;
+  if (id.strong_skip) {
+    genie::core::record::Chunk chunk;
+    drain_->SkipExporter(std::move(chunk), id);
+  }
+  lock_.Finished(id.length);
+}
+
 // -----------------------------------------------------------------------------
 
 void Decoder::ReadRec(std::ifstream& i, Record& r) {

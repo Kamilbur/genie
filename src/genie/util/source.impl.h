@@ -50,6 +50,11 @@ void Source<Type>::SetDrain(Drain<Type>* d) {
   drain_ = d;
 }
 
+template <typename Type>
+void Source<Type>::SkipExporter(Type&& t, const Section& id) {
+  drain_->SkipExporter(std::move(t), id);
+}
+
 // -----------------------------------------------------------------------------
 
 }  // namespace genie::util

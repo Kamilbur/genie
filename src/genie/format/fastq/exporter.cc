@@ -112,6 +112,9 @@ void Exporter::FlowIn(core::record::Chunk&& records, const util::Section& id) {
   GetStats().AddDouble("time-fastq-export", watch.Check());
 }
 
+void Exporter::SkipExporter(core::record::Chunk&& t, const util::Section& id) {
+  lock_.Finished(id.length);
+}
 // -----------------------------------------------------------------------------
 
 }  // namespace genie::format::fastq

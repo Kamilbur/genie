@@ -51,6 +51,12 @@ void SelectorTail<Tout>::FlowIn(Tout&& t, const Section& id) {
   Source<Tout>::FlowOut(std::move(t), id);
 }
 
+
+template <typename Tout>
+void SelectorTail<Tout>::SkipExporter(Tout&& t, const Section& id) {
+  Source<Tout>::SkipExporter(std::move(t), id);
+}
+
 // -----------------------------------------------------------------------------
 
 template <typename Tout>

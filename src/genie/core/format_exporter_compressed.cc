@@ -23,6 +23,9 @@ void FormatExporterCompressed::SkipIn(const util::Section&) {}
 
 void FormatExporterCompressed::FlushIn(uint64_t&) {}
 
+
+void FormatExporterCompressed::SkipExporter(AccessUnit&& t, const util::Section& id) {}
+
 // -----------------------------------------------------------------------------
 
 }  // namespace genie::core

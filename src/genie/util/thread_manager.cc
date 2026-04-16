@@ -36,7 +36,9 @@ namespace genie::util {
 void ThreadManager::Action(size_t) {
   try {
     for (const auto& s : source_) {
+      /* printf("Thread %zu started.\n", std::this_thread::get_id()); */
       while (!stop_flag_ && s->Pump(counter_, lock_)) {
+        printf("counter_: %zu\n", counter_);
       }
     }
   } catch (Exception& e) {

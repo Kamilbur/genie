@@ -11,6 +11,7 @@
 // -----------------------------------------------------------------------------
 
 #include <string>
+#include <vector>
 
 // -----------------------------------------------------------------------------
 
@@ -54,6 +55,8 @@ class ProgramOptions {
   size_t number_of_threads_;  //!< @brief
   bool raw_reference_;        //!< @brief
   bool raw_streams_;          //!< @brief
+
+  std::vector<int> random_access_units_;
 
   bool help_;  //!< @brief
 

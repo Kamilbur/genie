@@ -136,6 +136,8 @@ class SelectorHead final : public Drain<Tin> {
    */
   void FlowIn(Tin&& t, const Section& id) override;
 
+  /* void SkipExporter(Tin&& t, const Section& id) override; */
+  void SkipExporter(Tin&& t, const Section& id) override;
   /**
    * @brief Signals the end of data for all branches.
    *

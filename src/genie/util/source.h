@@ -99,6 +99,8 @@ class Source {
    */
   virtual void SetDrain(Drain<Type>* d);
 
+  virtual void SkipExporter(Type&& t, const Section& id);
+
   /**
    * @brief Virtual destructor for safe polymorphic use.
    *

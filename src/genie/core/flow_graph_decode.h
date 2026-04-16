@@ -56,6 +56,8 @@ class FlowGraphDecode final : public FlowGraph {
   std::vector<std::unique_ptr<FormatExporter>> exporters_;  //!< @brief
   util::SelectorHead<record::Chunk> exporter_selector_;     //!< @brief
 
+  std::vector<int> random_access_units_;
+
  public:
   /**
    * @brief
@@ -196,6 +198,8 @@ class FlowGraphDecode final : public FlowGraph {
    * @param dat
    */
   void AddQvCoder(std::unique_ptr<QvDecoder> dat);
+
+  void AddRandomAccessUnits(const std::vector<int>& units);
 
   /**
    * @brief

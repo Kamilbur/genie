@@ -95,6 +95,8 @@ class Exporter final : public core::FormatExporter {
    * contexts.
    */
   void FlowIn(core::record::Chunk&& records, const util::Section& id) override;
+
+  void SkipExporter(core::record::Chunk&& t, const util::Section& id) override;
 };
 
 // -----------------------------------------------------------------------------

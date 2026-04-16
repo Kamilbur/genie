@@ -33,6 +33,7 @@ class AccessUnit {
   /**
    * @brief
    */
+  int access_unit_id;  //!< @brief
   class Subsequence {
     util::DataBlock data_;  //!< @brief
     size_t position_{};     //!< @brief

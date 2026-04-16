@@ -38,6 +38,8 @@ class FormatExporter : public util::Drain<record::Chunk> {
    */
   void SkipIn(const util::Section& id) override;
 
+  void SkipExporter(record::Chunk&& t, const util::Section& id) override;
+
   /**
    * @brief
    */

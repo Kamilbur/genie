@@ -94,7 +94,8 @@ std::optional<AccessUnit> DataUnitFactory::read(util::BitReader& bit_reader) {
         } else {
           if (!reference_only_) {
             ret.LoadPayload(bit_reader);
-            for (auto& b : ret.GetBlocks()) {
+            auto& blocks = ret.GetBlocks();
+            for (auto& b : blocks) {
               b.load();
               b.parse();
             }

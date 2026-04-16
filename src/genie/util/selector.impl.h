@@ -65,6 +65,11 @@ void Selector<Tin, Tout>::FlowIn(Tin&& t, const Section& id) {
   head_.FlowIn(std::move(t), id);
 }
 
+template <typename Tin, typename Tout>
+void Selector<Tin, Tout>::SkipExporter(Tin&& t, const Section& id) {
+  head_.SkipExporter(std::move(t), id);
+}
+
 // -----------------------------------------------------------------------------
 
 template <typename Tin, typename Tout>

@@ -137,6 +137,8 @@ ProgramOptions::ProgramOptions(const int argc, char* argv[]) : help_(false) {
                 "instead of compressed. This will increase \nencoding speed, but
      decrease compression rate.\n");*/
 
+  app.add_option("--racc", random_access_units_, "")->mandatory(false)->delimiter(',');
+
   try {
     app.parse(argc, argv);
 

@@ -28,6 +28,8 @@
 // -----------------------------------------------------------------------------
 
 #include <mutex>  //NOLINT
+#include <vector>  //NOLINT
+#include <algorithm>  //NOLINT
 
 // -----------------------------------------------------------------------------
 
@@ -45,6 +47,7 @@ namespace genie::util {
  * application.
  */
 class OriginalSource {
+  std::vector<int> random_access_units_;
  public:
   /**
    * @brief Generates or pushes a new data entry into the application.
@@ -83,6 +86,15 @@ class OriginalSource {
    * a pointer to the `OriginalSource` interface.
    */
   virtual ~OriginalSource() = default;
+
+  void SetRandomAccessUnits(std::vector<int> units) {
+    random_access_units_ = std::move(units);
+  }
+
+  bool IsRandomAccessUnitSkippable(int unit) {
+    return std::find(random_access_units_.begin(), random_access_units_.end(), unit) ==
+           random_access_units_.end();
+  }
 };
 
 // -----------------------------------------------------------------------------

@@ -41,6 +41,8 @@ class FormatExporterCompressed : public util::Drain<AccessUnit> {
    */
   void FlushIn(uint64_t& pos) override;
 
+  void SkipExporter(AccessUnit&& t, const util::Section& id) override;
+
   /**
    * @brief
    */

@@ -182,6 +182,11 @@ void FlowGraphDecode::AddQvCoder(std::unique_ptr<QvDecoder> dat) {
   qv_selector_.AddMod(qv_coders_.back().get());
 }
 
+void FlowGraphDecode::AddRandomAccessUnits(const std::vector<int>& units) {
+  random_access_units_.insert(random_access_units_.end(), units.begin(),
+                              units.end());
+}
+
 // -----------------------------------------------------------------------------
 
 void FlowGraphDecode::SetQvCoder(std::unique_ptr<QvDecoder> dat,
@@ -196,7 +201,9 @@ void FlowGraphDecode::Run() {
   std::vector<util::OriginalSource*> imps;
   imps.reserve(importers_.size());
   for (auto& i : importers_) {
-    imps.emplace_back(i.get());
+    auto importer = i.get();
+    importer->SetRandomAccessUnits(random_access_units_);
+    imps.emplace_back(importer);
   }
   mgr_.SetSource(std::move(imps));
   mgr_.Run();

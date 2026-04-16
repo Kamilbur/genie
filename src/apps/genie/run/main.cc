@@ -366,6 +366,8 @@ std::unique_ptr<genie::core::FlowGraph> BuildDecoder(
                                                    p_opts.working_directory_,
                                                    p_opts.combine_pairs_flag_);
 
+  flow->AddRandomAccessUnits(p_opts.random_access_units_);
+
   std::string json_uri_path = p_opts.input_ref_file_;
   if (std::filesystem::exists(p_opts.input_file_ + ".json") &&
       std::filesystem::file_size(p_opts.input_file_ + ".json")) {
