@@ -93,7 +93,8 @@ void SelectorHead<Tin>::SkipExporter(Tin&& t, const Section& id) {
   Tin in = std::move(t);
   const size_t mod_id = select_(in);
   for (size_t i = 0; i < mods_.size(); ++i) {
-    mods_[i]->SkipExporter(std::move(in), Section{id.start, id.length, i != mod_id});
+    mods_[i]->SkipExporter(std::move(in),
+                           Section{id.start, id.length, i == mod_id});
   }
 }
 

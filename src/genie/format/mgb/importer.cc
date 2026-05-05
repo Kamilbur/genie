@@ -52,33 +52,23 @@ bool Importer::Pump(uint64_t& id, std::mutex&) {
     sec.length = unit->GetHeader().GetReadCount();
     id += unit->GetHeader().GetReadCount();
 
-    /* const float progress = static_cast<float>(reader_.GetStreamPosition()) / */
-    /*                        static_cast<float>(file_size_); */
-    /* while (progress - last_progress_ > 0.05) {  // NOLINT */
-    /*   last_progress_ += 0.05; */
-    /*   UTILS_LOG(util::Logger::Severity::INFO, */
-    /*             "Progress: " + */
-    /*                 std::to_string( */
-    /*                     static_cast<int>(std::round(last_progress_ * 100))) + */
-    /*                 "% of file read"); */
-    /* } */
+    const float progress = static_cast<float>(reader_.GetStreamPosition()) /
+                           static_cast<float>(file_size_);
+    while (progress - last_progress_ > 0.05) {  // NOLINT
+      last_progress_ += 0.05;
+      UTILS_LOG(util::Logger::Severity::INFO,
+                "Progress: " +
+                    std::to_string(
+                        static_cast<int>(std::round(last_progress_ * 100))) +
+                    "% of file read");
+    }
   }
-  /* sec.strong_skip = true; */
-  /* FlowOut(ConvertAu(std::move(unit.value())), sec); */
   int access_unit_id = unit->GetHeader().GetId();
-  printf("AccessUnit id: %d\n", access_unit_id);
   auto au = ConvertAu(std::move(unit.value()));
 
   if (IsRandomAccessUnitSkippable(access_unit_id)) {
-    printf("Skipping AccessUnit id: %d\n", access_unit_id);
     SkipExporter(std::move(au), sec);
-
-    /* auto selector_head = drain_->head_; */
-    /* size_t mod_id = selector_head->select_(au); */
-    /* selector_head->mods_[mod_id]->SkipOut(util::Section{sec.start, sec.end, true}); */
-  }
-  else {
-    printf("Flowing AccessUnit id: %d\n", access_unit_id);
+  } else {
     FlowOut(std::move(au), sec);
   }
   return true;

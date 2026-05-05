@@ -27,9 +27,9 @@
 
 // -----------------------------------------------------------------------------
 
-#include <mutex>  //NOLINT
-#include <vector>  //NOLINT
 #include <algorithm>  //NOLINT
+#include <mutex>      //NOLINT
+#include <vector>     //NOLINT
 
 // -----------------------------------------------------------------------------
 
@@ -91,8 +91,9 @@ class OriginalSource {
     random_access_units_ = std::move(units);
   }
 
-  bool IsRandomAccessUnitSkippable(int unit) {
-    return std::find(random_access_units_.begin(), random_access_units_.end(), unit) ==
+  bool IsRandomAccessUnitSkippable(int unit) const {
+    return !random_access_units_.empty() &&
+           std::find(random_access_units_.begin(), random_access_units_.end(), unit) ==
            random_access_units_.end();
   }
 };
