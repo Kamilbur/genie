@@ -91,6 +91,12 @@ class OriginalSource {
     random_access_units_ = std::move(units);
   }
 
+  const std::vector<int>& GetRandomAccessUnits() const {
+    return random_access_units_;
+  }
+
+  bool HasRandomAccessUnits() const { return !random_access_units_.empty(); }
+
   bool IsRandomAccessUnitSkippable(int unit) const {
     return !random_access_units_.empty() &&
            std::find(random_access_units_.begin(), random_access_units_.end(), unit) ==

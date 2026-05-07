@@ -14,6 +14,7 @@
 #include <utility>
 
 #include "genie/format/mgb/access_unit.h"
+#include "genie/format/mgb/importer.h"
 #include "genie/format/mgb/raw_reference.h"
 #include "genie/format/mgb/reference.h"
 #include "genie/util/log.h"
@@ -93,6 +94,11 @@ std::optional<AccessUnit> DataUnitFactory::read(util::BitReader& bit_reader) {
           bit_reader.SkipAlignedBytes(ret.GetPayloadSize());
         } else {
           if (!reference_only_) {
+            if (importer_->IsRandomAccessUnitSkippable(
+                    ret.GetHeader().GetId())) {
+              bit_reader.SkipAlignedBytes(ret.GetPayloadSize());
+              continue;
+            }
             ret.LoadPayload(bit_reader);
             auto& blocks = ret.GetBlocks();
             for (auto& b : blocks) {

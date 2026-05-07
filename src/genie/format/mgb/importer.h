@@ -49,6 +49,9 @@ class Importer final : public core::FormatImporterCompressed,
   ///
   float last_progress_;
 
+  ///
+  size_t emitted_random_access_units_;
+
   /**
    * @brief
    * @param au

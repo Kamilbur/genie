@@ -29,7 +29,8 @@ Importer::Importer(std::istream& file, core::ReferenceManager* manager,
       ref_manager_(manager),
       decoder_(ref_decoder),
       file_size_(0),
-      last_progress_(0) {
+      last_progress_(0),
+      emitted_random_access_units_(0) {
   const auto pos = file.tellg();
   file.seekg(0, std::ios::end);
   file_size_ = file.tellg();
@@ -39,6 +40,11 @@ Importer::Importer(std::istream& file, core::ReferenceManager* manager,
 // -----------------------------------------------------------------------------
 
 bool Importer::Pump(uint64_t& id, std::mutex&) {
+  if (HasRandomAccessUnits() &&
+      emitted_random_access_units_ >= GetRandomAccessUnits().size()) {
+    return false;
+  }
+
   // util::Watch watch; TODO(fabian): Statistics
   std::optional<AccessUnit> unit;
   util::Section sec{};
@@ -69,6 +75,9 @@ bool Importer::Pump(uint64_t& id, std::mutex&) {
   if (IsRandomAccessUnitSkippable(access_unit_id)) {
     SkipExporter(std::move(au), sec);
   } else {
+    if (HasRandomAccessUnits()) {
+      ++emitted_random_access_units_;
+    }
     FlowOut(std::move(au), sec);
   }
   return true;

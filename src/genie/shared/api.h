@@ -64,6 +64,24 @@ uint8_t GenieGetAccessUnitRanges(const char* input_file,
                                  uint64_t* output_count);
 
 /**
+ * @brief Map MPEG-G data-unit byte ranges and access-unit read counts.
+ *
+ * output_info receives malloc-owned flattened quadruples:
+ * access_unit_id, start_offset, end_offset, read_count. Caller must release it
+ * with GenieFree(). access_unit_id UINT64_MAX marks global data units needed by
+ * every access-unit decode. Global entries have read_count 0. Ranges are
+ * half-open byte intervals: [start_offset, end_offset).
+ *
+ * @param input_file Path to an .mgb file.
+ * @param output_info Receives allocated flattened info quadruples.
+ * @param output_count Receives the number of info quadruples.
+ * @return GENIE_SHARED_SUCCESS on success, otherwise a GENIE_SHARED_* code.
+ */
+uint8_t GenieGetAccessUnitInfo(const char* input_file,
+                               uint64_t** output_info,
+                               uint64_t* output_count);
+
+/**
  * @brief Decompress one MPEG-G access unit from an .mgb file.
  *
  * output_file must end in .fastq.
