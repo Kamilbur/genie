@@ -46,6 +46,24 @@ uint8_t GenieSetLogSeverity(uint8_t severity);
 uint8_t GenieGetAccessUnitCount(const char* input_file, uint64_t* output_count);
 
 /**
+ * @brief Map MPEG-G data-unit byte ranges needed for partial .mgb reads.
+ *
+ * output_ranges receives malloc-owned flattened triples:
+ * access_unit_id, start_offset, end_offset. Caller must release it with
+ * GenieFree(). access_unit_id UINT64_MAX marks global data units needed by
+ * every access-unit decode, such as parameter sets or raw references. Ranges
+ * are half-open byte intervals: [start_offset, end_offset).
+ *
+ * @param input_file Path to an .mgb file.
+ * @param output_ranges Receives allocated flattened range triples.
+ * @param output_count Receives the number of range triples.
+ * @return GENIE_SHARED_SUCCESS on success, otherwise a GENIE_SHARED_* code.
+ */
+uint8_t GenieGetAccessUnitRanges(const char* input_file,
+                                 uint64_t** output_ranges,
+                                 uint64_t* output_count);
+
+/**
  * @brief Decompress one MPEG-G access unit from an .mgb file.
  *
  * output_file must end in .fastq.

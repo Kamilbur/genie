@@ -283,6 +283,77 @@ uint8_t CountAccessUnitsInMgb(const std::string& input_file,
   }
 }
 
+uint8_t MapAccessUnitRangesInMgb(const std::string& input_file,
+                                 uint64_t** output_ranges,
+                                 uint64_t* output_count) {
+  std::ifstream stream(input_file, std::ios::binary);
+  if (!stream) {
+    return GENIE_SHARED_INVALID_PARAMETER;
+  }
+
+  genie::util::BitReader reader(stream);
+  std::map<size_t, genie::core::parameter::EncodingSet> parameter_sets;
+  std::vector<uint64_t> ranges;
+
+  while (true) {
+    const uint64_t start = reader.GetStreamPosition();
+    const auto type =
+        reader.Read<genie::core::parameter::DataUnit::DataUnitType>();
+    if (!reader.IsStreamGood()) {
+      reader.ClearStreamState();
+      break;
+    }
+
+    switch (type) {
+      case genie::core::parameter::DataUnit::DataUnitType::kParameterSet: {
+        genie::core::parameter::ParameterSet set(reader);
+        parameter_sets.emplace(set.GetId(), set.GetEncodingSet());
+        const uint64_t end = reader.GetStreamPosition();
+        ranges.push_back(UINT64_MAX);
+        ranges.push_back(start);
+        ranges.push_back(end);
+        break;
+      }
+      case genie::core::parameter::DataUnit::DataUnitType::kRawReference: {
+        genie::format::mgb::RawReference(reader, true, true);
+        const uint64_t end = reader.GetStreamPosition();
+        ranges.push_back(UINT64_MAX);
+        ranges.push_back(start);
+        ranges.push_back(end);
+        break;
+      }
+      case genie::core::parameter::DataUnit::DataUnitType::kAccessUnit: {
+        genie::format::mgb::AccessUnit au(parameter_sets, reader, true);
+        reader.SkipAlignedBytes(au.GetPayloadSize());
+        const uint64_t end = reader.GetStreamPosition();
+        ranges.push_back(au.GetHeader().GetId());
+        ranges.push_back(start);
+        ranges.push_back(end);
+        break;
+      }
+      default:
+        return GENIE_SHARED_INVALID_BITSTREAM;
+    }
+  }
+
+  *output_count = ranges.size() / 3;
+  if (ranges.empty()) {
+    *output_ranges = nullptr;
+    return GENIE_SHARED_SUCCESS;
+  }
+
+  const auto bytes = static_cast<size_t>(ranges.size() * sizeof(uint64_t));
+  auto* data = static_cast<uint64_t*>(std::malloc(bytes));
+  if (data == nullptr) {
+    *output_ranges = nullptr;
+    *output_count = 0;
+    return GENIE_SHARED_UNLISTED_ERROR;
+  }
+  std::memcpy(data, ranges.data(), bytes);
+  *output_ranges = data;
+  return GENIE_SHARED_SUCCESS;
+}
+
 std::unique_ptr<genie::core::FlowGraphDecode> BuildSharedDecoder(
     const size_t threads, const std::string& working_dir) {
   auto flow = std::make_unique<genie::core::FlowGraphDecode>(threads);
@@ -448,6 +519,26 @@ uint8_t GenieGetAccessUnitCount(const char* input_file,
   try {
     DetectSharedModules();
     return CountAccessUnitsInMgb(input_file, output_count);
+  } catch (const std::exception&) {
+    return GENIE_SHARED_INVALID_BITSTREAM;
+  } catch (...) {
+    return GENIE_SHARED_UNLISTED_ERROR;
+  }
+}
+
+uint8_t GenieGetAccessUnitRanges(const char* input_file,
+                                 uint64_t** output_ranges,
+                                 uint64_t* output_count) {
+  if (!IsMgbFile(input_file) || output_ranges == nullptr ||
+      output_count == nullptr) {
+    return GENIE_SHARED_INVALID_PARAMETER;
+  }
+  *output_ranges = nullptr;
+  *output_count = 0;
+
+  try {
+    DetectSharedModules();
+    return MapAccessUnitRangesInMgb(input_file, output_ranges, output_count);
   } catch (const std::exception&) {
     return GENIE_SHARED_INVALID_BITSTREAM;
   } catch (...) {
