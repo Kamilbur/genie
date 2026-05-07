@@ -51,6 +51,9 @@
 
 namespace {
 
+std::mutex g_log_severity_mutex;
+bool g_log_severity_configured = false;
+
 std::string FileExtension(const std::string& path) {
   const auto pos = path.find_last_of('.');
   if (pos == std::string::npos) {
@@ -70,6 +73,14 @@ bool IsMgbFile(const char* path) {
 void DetectSharedModules() {
   static std::once_flag once;
   std::call_once(once, [] {
+    {
+      std::lock_guard lock(g_log_severity_mutex);
+      if (!g_log_severity_configured) {
+        genie::util::Logger::GetInstance().SetSeverityLevel(
+            genie::util::Logger::Severity::WARNING);
+      }
+    }
+
     auto& ind_park = genie::core::GlobalCfg::GetSingleton().GetIndustrialPark();
     ind_park.RegisterConstructor<
         genie::core::parameter::desc_pres::DecoderRegular>(
@@ -397,6 +408,19 @@ uint8_t DecompressAccessUnitToStream(const std::string& input_path,
 }  // namespace
 
 extern "C" {
+
+uint8_t GenieSetLogSeverity(const uint8_t severity) {
+  if (severity > 3) {
+    return GENIE_SHARED_INVALID_PARAMETER;
+  }
+  {
+    std::lock_guard lock(g_log_severity_mutex);
+    genie::util::Logger::GetInstance().SetSeverityLevel(
+        static_cast<genie::util::Logger::Severity>(severity));
+    g_log_severity_configured = true;
+  }
+  return GENIE_SHARED_SUCCESS;
+}
 
 const char* GenieSharedStrerror(const uint8_t code) {
   switch (code) {

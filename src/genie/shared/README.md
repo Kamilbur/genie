@@ -37,6 +37,21 @@ src/genie/shared/api.h
 ## Functions
 
 ```c
+uint8_t GenieSetLogSeverity(uint8_t severity);
+```
+
+Sets the minimum GENIE logger severity. The shared API defaults to `WARNING`
+during module initialization unless a caller set the severity first.
+
+Severity values:
+- `0`: DEBUG
+- `1`: INFO
+- `2`: WARNING
+- `3`: ERROR
+
+Returns `GENIE_SHARED_SUCCESS` on success.
+
+```c
 uint8_t GenieGetAccessUnitCount(const char* input_file,
                                 uint64_t* output_count);
 ```
@@ -186,6 +201,7 @@ sys.path.insert(0, "src/genie/shared")
 from genie_ffi import Genie
 
 genie = Genie("build/lib/libgenie.so")
+genie.set_log_severity(2)  # WARNING
 print(genie.access_unit_count("input.mgb"))
 
 fastq_bytes = genie.decompress_access_unit_to_bytes(

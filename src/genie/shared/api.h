@@ -26,6 +26,17 @@ extern "C" {
 const char* GenieSharedStrerror(uint8_t code);
 
 /**
+ * @brief Set the GENIE logger severity threshold.
+ *
+ * Severity values match genie::util::Logger::Severity:
+ * 0 = DEBUG, 1 = INFO, 2 = WARNING, 3 = ERROR.
+ *
+ * @param severity Minimum severity to emit.
+ * @return GENIE_SHARED_SUCCESS on success, otherwise a GENIE_SHARED_* code.
+ */
+uint8_t GenieSetLogSeverity(uint8_t severity);
+
+/**
  * @brief Count MPEG-G access units in an .mgb file.
  *
  * @param input_file Path to an .mgb file.

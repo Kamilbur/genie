@@ -15,6 +15,11 @@ from cdlml import GLIBCPreloadedCDLL
 PathLike = str | bytes | Path
 
 GENIE_SHARED_SUCCESS = 0
+GENIE_SHARED_INVALID_PARAMETER = 13
+GENIE_LOG_DEBUG = 0
+GENIE_LOG_INFO = 1
+GENIE_LOG_WARNING = 2
+GENIE_LOG_ERROR = 3
 
 
 class GenieError(RuntimeError):
@@ -52,6 +57,9 @@ class Genie:
         self._lib.GenieSharedStrerror.argtypes = [ctypes.c_uint8]
         self._lib.GenieSharedStrerror.restype = ctypes.c_char_p
 
+        self._lib.GenieSetLogSeverity.argtypes = [ctypes.c_uint8]
+        self._lib.GenieSetLogSeverity.restype = ctypes.c_uint8
+
         self._lib.GenieGetAccessUnitCount.argtypes = [
             ctypes.c_char_p,
             ctypes.POINTER(ctypes.c_uint64),
@@ -88,6 +96,14 @@ class Genie:
         raw = self._lib.GenieSharedStrerror(code)
         message = raw.decode() if raw else "unknown error"
         raise GenieError(code, message)
+
+    def set_log_severity(self, severity: int) -> None:
+        """Set minimum GENIE log severity: 0 DEBUG, 1 INFO, 2 WARNING, 3 ERROR."""
+        if severity < GENIE_LOG_DEBUG or severity > GENIE_LOG_ERROR:
+            self._check(GENIE_SHARED_INVALID_PARAMETER)
+            return
+        code = self._lib.GenieSetLogSeverity(severity)
+        self._check(code)
 
     def access_unit_count(self, input_file: PathLike) -> int:
         count = ctypes.c_uint64()
